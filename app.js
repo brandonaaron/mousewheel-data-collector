@@ -8,8 +8,6 @@ mongoose.connect(process.env.MONGOHQ_URL || 'mongodb://localhost/mousewheeldatac
 
 var Schema = mongoose.Schema;
 
-app.set('port', process.env.PORT || 8080);
-
 app.use(express.favicon());
 app.use(express.json());
 app.use(express.urlencoded());
@@ -86,4 +84,4 @@ app.post('/', function(req, res) {
   });
 });
 
-app.listen(8080);
+app.listen(process.env.PORT || 8080);
