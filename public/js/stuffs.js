@@ -70,7 +70,7 @@
     buildPager: function(data) {
       if (data.pages <= 1) return;
       var html = '<tr><td colspan="5">';
-      if (data.pages > 1 && data.page <= data.pages) {
+      if (data.pages > 1 && data.page > 1 && data.page <= data.pages) {
         html += '<button class="btn btn-default btn-xs prev">Prev</button>';
       }
       if (data.page >= 1 && data.page < data.pages) {
