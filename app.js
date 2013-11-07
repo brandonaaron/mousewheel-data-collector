@@ -4,7 +4,7 @@ var stylus = require('stylus');
 var nib = require('nib');
 var useragent = require('useragent');
 var mongoose = require('mongoose');
-mongoose.connect(process.env.mongodburl || 'mongodb://localhost/mousewheeldatacollector');
+mongoose.connect(process.env.MONGOHQ_URL || 'mongodb://localhost/mousewheeldatacollector');
 
 var Schema = mongoose.Schema;
 
@@ -73,7 +73,6 @@ var Collector = mongoose.model('Collector', CollectorSchema);
 app.get('/', function(req, res) {
   var agent = useragent.parse(req.headers['user-agent']);
   Collector.find().sort('-_id').limit(15).exec(function(err, docs) {
-    console.log(docs);
     if (err) res.send(500);
     else res.render('home', { agent: agent, records: docs });
   });
