@@ -9,4 +9,7 @@ html,body{height:100%}
 .collector .yourresults dl dd{float:right;clear:right}
 .collector .submit{position:absolute;top:138px;left:10px;right:10px;text-align:center}
 .collector .useragent{position:absolute;bottom:10px;left:10px;right:10px;font-size:12px;text-align:center;color:#999}
+.results{margin-bottom:20px;}
+.results tfoot{text-align:center;}
+.results tfoot .btn{margin:5px}
 footer{height:25px;background-color:#f5f5f5;font-size:11px;text-align:center;padding-top:5px}

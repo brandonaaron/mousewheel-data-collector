@@ -20,8 +20,7 @@ block content
           button(type="button", class="btn btn-default btn-xs", disabled="disabled") Submit Results
         .useragent("data-ua"=agent.toJSON())= agent.toString()
     .col-lg-9.col-md-9.col-sm-8
-      h2 Existing Results
-      table.table-condensed.table-striped.table-responsive.table-bordered
+      table.results.table-condensed.table-striped.table-responsive.table-bordered
         thead
           tr
             th OS
@@ -29,15 +28,7 @@ block content
             th Min <small>(Norm, Raw)</small>
             th Max <small>(Norm, Raw)</small>
             th Resolution
+        tfoot
         tbody
-          each rec in records
-            tr
-              td
-                = rec.useragent.os.family
-                small= ' (' + rec.useragent.os.major + '.' + rec.useragent.os.minor + '.' + rec.useragent.os.patch + ')'
-              td
-                = rec.useragent.family
-                small= ' (' + rec.useragent.major + '.' + rec.useragent.minor + '.' + rec.useragent.patch + ')'
-              td= rec.delta.normalized.min + ', ' + rec.delta.raw.min
-              td= rec.delta.normalized.max + ', ' + rec.delta.raw.max
-              td= rec.delta.resolution
+          tr
+            td(colspan="5") Loading Results...

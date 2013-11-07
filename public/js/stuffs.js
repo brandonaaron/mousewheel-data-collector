@@ -4,6 +4,8 @@
     setup: function() {
       this.$collector = $('.collector');
       this.$instruction = this.$collector.find('.instruction');
+      this.$resultsbody = $('.results tbody');
+      this.$resultsfoot = $('.results tfoot');
       this.$yourresults = $('.yourresults');
       this.$yourresultsmin = this.$yourresults.find('.yourresults-min');
       this.$yourresultsmax = this.$yourresults.find('.yourresults-max');
@@ -26,6 +28,56 @@
       };
       this.$collector.on('mousewheel', $.proxy(this, 'collection'));
       this.$submit.on('click', '.btn', $.proxy(this, 'submitResults'));
+      this.$resultsfoot.on('click', '.prev', $.proxy(this, 'prevResults'));
+      this.$resultsfoot.on('click', '.next', $.proxy(this, 'nextResults'));
+      this.currentPage = 1;
+      this.fetchResults();
+    },
+
+    prevResults: function() {
+      this.fetchResults(this.currentPage - 1);
+    },
+
+    nextResults: function() {
+      this.fetchResults(this.currentPage + 1);
+    },
+
+    fetchResults: function(page) {
+      this.currentPage = page || 1;
+      $.ajax({
+        type: 'GET',
+        url: '/results.json',
+        data: { page: this.currentPage },
+        success: $.proxy(this, 'buildResults')
+      });
+    },
+
+    buildResults: function(data) {
+      var html = '';
+      $.each(data.results, $.proxy(function(i, result) {
+        html += '<tr>';
+        html +=   '<td>' + result.useragent.os.family + '</td>';
+        html +=   '<td>' + result.useragent.family + ' ' + result.useragent.major + '</td>';
+        html +=   '<td>' + result.delta.normalized.min + ', ' + result.delta.raw.min + '</td>';
+        html +=   '<td>' + result.delta.normalized.max + ', ' + result.delta.raw.max + '</td>';
+        html +=   '<td>' + result.delta.resolution + '</td>';
+        html += '</tr>';
+      }, this));
+      this.$resultsbody.html(html);
+      this.buildPager(data);
+    },
+
+    buildPager: function(data) {
+      if (data.pages <= 1) return;
+      var html = '<tr><td colspan="5">';
+      if (data.pages > 1 && data.page <= data.pages) {
+        html += '<button class="btn btn-default btn-xs prev">Prev</button>';
+      }
+      if (data.page >= 1 && data.page < data.pages) {
+        html += '<button class="btn btn-default btn-xs next">Next</button>';
+      }
+      html += '</td></tr>';
+      this.$resultsfoot.html(html);
     },
 
     submitResults: function(event) {
@@ -33,9 +85,9 @@
       $.ajax({
         type: 'POST',
         data: this.data,
-        complete: function() {
-          console.log(arguments);
-        }
+        success: $.proxy(function() {
+          this.fetchResults();
+        }, this)
       });
       console.log(event);
     },

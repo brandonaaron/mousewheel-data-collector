@@ -70,9 +70,21 @@ var Collector = mongoose.model('Collector', CollectorSchema);
 
 app.get('/', function(req, res) {
   var agent = useragent.parse(req.headers['user-agent']);
-  Collector.find().sort('-_id').limit(15).exec(function(err, docs) {
-    if (err) res.send(500);
-    else res.render('home', { agent: agent, records: docs });
+  res.render('home', { agent: agent });
+});
+
+app.get('/results.json', function(req, res) {
+  var pageSize = 10;
+  var page = parseInt(req.param('page'), 10) || 1;
+
+  Collector.find().sort('-_id').skip(pageSize * (page-1)).limit(pageSize).exec(function(err, docs) {
+    if (err) res.json(500);
+    else {
+      Collector.count().exec(function(err, count) {
+        if (err) res.json(500)
+        else res.json({ count: count, page: page, pages: Math.ceil(count/pageSize), results: docs });
+      });
+    }
   });
 });
 
